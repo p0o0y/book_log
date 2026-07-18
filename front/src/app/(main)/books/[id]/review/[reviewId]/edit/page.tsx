@@ -1,23 +1,24 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { getBook } from "@/lib/store";
+import { getBook, getReview } from "@/lib/store";
 import { BookCover } from "@/components/book-cover";
 import { StatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ReviewForm } from "../review-form";
+import { ReviewForm } from "../../review-form";
 
 export const dynamic = "force-dynamic";
 
-export default async function NewReviewPage({
+export default async function EditReviewPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; reviewId: string }>;
 }) {
-  const { id } = await params;
+  const { id, reviewId } = await params;
   const book = getBook(id);
-  if (!book) notFound();
+  const review = getReview(reviewId);
+  if (!book || !review || review.bookId !== book.id) notFound();
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
@@ -40,9 +41,9 @@ export default async function NewReviewPage({
         </CardContent>
       </Card>
 
-      <h1 className="text-2xl font-black">독후감 쓰기</h1>
+      <h1 className="text-2xl font-black">독후감 수정</h1>
 
-      <ReviewForm bookId={book.id} />
+      <ReviewForm bookId={book.id} review={review} />
     </div>
   );
 }

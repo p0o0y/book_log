@@ -5,8 +5,8 @@
 
 :root {
   --radius: 0.625rem;
-  /* 따뜻한 크림/브라운 톤 (check-inout 참고) */
-  --background: oklch(0.975 0.012 85);
+  /* 흰색 배경 + 브라운 포인트 톤 */
+  --background: oklch(1 0 0);
   --foreground: oklch(0.28 0.03 50);
   --card: oklch(0.99 0.008 90);
   --card-foreground: oklch(0.28 0.03 50);
@@ -89,4 +89,20 @@
 .spine-title {
   writing-mode: vertical-rl;
   text-orientation: mixed;
+}
+
+/* 책장 위 펜던트 전등 흔들림 */
+@keyframes lamp-sway {
+  0%,
+  100% {
+    transform: rotate(-2.5deg);
+  }
+  50% {
+    transform: rotate(2.5deg);
+  }
+}
+
+.animate-lamp-sway {
+  animation: lamp-sway 4.5s ease-in-out infinite;
+  transform-origin: top center;
 }

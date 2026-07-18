@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import type { Book } from "@/lib/mock-data";
+import type { Book } from "@/lib/types";
 
 /**
  * 표지 플레이스홀더 — 표지 이미지 로딩 실패/부재 시 대표색 기반 대체 UI (PRD 비기능 요구사항).

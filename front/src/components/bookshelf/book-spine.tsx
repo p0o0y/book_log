@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { BookOpen, Bookmark } from "lucide-react";
-import type { Book } from "@/lib/mock-data";
+import type { Book } from "@/lib/types";
 
 /** 책 id 기반 결정적 변주 — 책마다 두께/높이/기울기를 살짝 다르게 */
 function variation(id: string) {

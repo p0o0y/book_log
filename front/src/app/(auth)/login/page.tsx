@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { LibraryBig } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -9,9 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+import { LoginForm } from "./login-form";
 
 export default function LoginPage() {
   return (
@@ -30,45 +27,11 @@ export default function LoginPage() {
             나만의 서재는 로그인 후 이용할 수 있어요
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <form className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">이메일</Label>
-              <Input id="email" type="email" placeholder="me@example.com" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">비밀번호</Label>
-              <Input id="password" type="password" placeholder="••••••••" />
-            </div>
-            <Button type="button" className="w-full">
-              이메일로 로그인
-            </Button>
-          </form>
-
-          <div className="flex items-center gap-3">
-            <Separator className="flex-1" />
-            <span className="text-xs text-muted-foreground">또는</span>
-            <Separator className="flex-1" />
-          </div>
-
-          <div className="space-y-2">
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full bg-[#FEE500] text-[#191919] hover:bg-[#FEE500]/90"
-            >
-              카카오로 시작하기
-            </Button>
-            <Button type="button" variant="outline" className="w-full">
-              Google로 시작하기
-            </Button>
-          </div>
+        <CardContent>
+          <LoginForm />
         </CardContent>
         <CardFooter className="justify-center text-sm text-muted-foreground">
-          아직 계정이 없나요?
-          <span className="ml-1 cursor-pointer font-medium text-primary underline-offset-4 hover:underline">
-            회원가입
-          </span>
+          계정이 없다면 회원가입 버튼으로 바로 가입할 수 있어요
         </CardFooter>
       </Card>
     </div>
