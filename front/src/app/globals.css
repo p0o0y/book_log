@@ -90,3 +90,19 @@
   writing-mode: vertical-rl;
   text-orientation: mixed;
 }
+
+/* 책장 위 펜던트 전등 흔들림 */
+@keyframes lamp-sway {
+  0%,
+  100% {
+    transform: rotate(-2.5deg);
+  }
+  50% {
+    transform: rotate(2.5deg);
+  }
+}
+
+.animate-lamp-sway {
+  animation: lamp-sway 4.5s ease-in-out infinite;
+  transform-origin: top center;
+}

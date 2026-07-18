@@ -4,13 +4,37 @@ import { useState } from "react";
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-/** 별점 입력 (클라이언트 컴포넌트, UI만 — 값 저장 없음) */
-export function StarRatingInput({ className }: { className?: string }) {
-  const [rating, setRating] = useState(0);
+/** 별점 입력 — name을 주면 hidden input으로 폼 제출 값에 포함된다 (0 = 선택 안 함) */
+export function StarRatingInput({
+  className,
+  name,
+  defaultValue = 0,
+}: {
+  className?: string;
+  name?: string;
+  defaultValue?: number;
+}) {
+  const [rating, setRating] = useState(defaultValue);
   const [hover, setHover] = useState(0);
 
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "ArrowRight" || e.key === "ArrowUp") {
+      e.preventDefault();
+      setRating((r) => Math.min(5, r + 1));
+    } else if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
+      e.preventDefault();
+      setRating((r) => Math.max(0, r - 1));
+    }
+  }
+
   return (
-    <div className={cn("flex items-center gap-1", className)}>
+    <div
+      role="group"
+      aria-label="별점 선택"
+      onKeyDown={handleKeyDown}
+      className={cn("flex items-center gap-1", className)}
+    >
+      {name && <input type="hidden" name={name} value={rating} />}
       {[1, 2, 3, 4, 5].map((n) => (
         <button
           key={n}

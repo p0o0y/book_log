@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { Book } from "@/lib/mock-data";
+import type { Book } from "@/lib/types";
 import { BookCover } from "@/components/book-cover";
 import { StatusBadge } from "@/components/status-badge";
 

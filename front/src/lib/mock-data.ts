@@ -1,48 +1,10 @@
-export type BookStatus = "reading" | "finished" | "wishlist";
+import type { Book, Review, YoutubeVideo } from "./types";
 
-export interface Book {
-  id: string;
-  title: string;
-  author: string;
-  publisher?: string;
-  coverImageUrl?: string;
-  status: BookStatus;
-  startDate?: string;
-  finishDate?: string;
-  currentPage?: number;
-  totalPages?: number;
-  /** 표지 대표색 (책등 색상에 반영) */
-  spineColor: string;
-  /** 책등 글자색 */
-  spineTextColor: string;
-}
-
-export interface Review {
-  id: string;
-  bookId: string;
-  rating?: number;
-  oneLiner: string;
-  content: string;
-  createdAt: string;
-}
-
-export interface YoutubeVideo {
-  id: string;
-  bookId: string;
-  videoId: string;
-  title: string;
-  channel: string;
-  duration: string;
-  thumbnailColor: string;
-}
-
-export const STATUS_LABEL: Record<BookStatus, string> = {
-  reading: "읽는 중",
-  finished: "완독",
-  wishlist: "찜",
-};
-
-export const books: Book[] = [
+/**
+ * 인메모리 저장소(store.ts)의 초기 시드 데이터.
+ * 데이터 조회/변경은 반드시 store.ts의 함수를 통해서만 할 것.
+ */
+export const seedBooks: Book[] = [
   { id: "1", title: "수축 사회", author: "홍성국", publisher: "메디치미디어", status: "finished", startDate: "2026-01-03", finishDate: "2026-01-21", totalPages: 456, spineColor: "#2f4858", spineTextColor: "#f5f0e6" },
   { id: "2", title: "긴 게의 파랑", author: "천선란", publisher: "허블", status: "finished", startDate: "2026-02-01", finishDate: "2026-02-14", totalPages: 388, spineColor: "#3b6ea5", spineTextColor: "#ffffff" },
   { id: "3", title: "물고기는 존재하지 않는다", author: "룰루 밀러", publisher: "곰출판", status: "finished", startDate: "2026-02-20", finishDate: "2026-03-02", totalPages: 300, spineColor: "#1d3557", spineTextColor: "#f1faee" },
@@ -63,7 +25,7 @@ export const books: Book[] = [
   { id: "18", title: "1984", author: "조지 오웰", publisher: "민음사", status: "finished", startDate: "2026-06-01", finishDate: "2026-06-15", totalPages: 424, spineColor: "#212529", spineTextColor: "#e9ecef" },
 ];
 
-export const reviews: Review[] = [
+export const seedReviews: Review[] = [
   {
     id: "r1",
     bookId: "1",
@@ -114,7 +76,7 @@ export const reviews: Review[] = [
   },
 ];
 
-export const youtubeVideos: YoutubeVideo[] = [
+export const seedYoutubeVideos: YoutubeVideo[] = [
   { id: "y1", bookId: "2", videoId: "mock-1", title: "『천 개의 파랑』 리뷰 — 올해 최고의 한국 SF", channel: "책읽는다락방", duration: "12:34", thumbnailColor: "#3b6ea5" },
   { id: "y2", bookId: "2", videoId: "mock-2", title: "천선란 작가 인터뷰: 로봇과 인간 사이", channel: "출판저널TV", duration: "24:01", thumbnailColor: "#1d3557" },
   { id: "y3", bookId: "2", videoId: "mock-3", title: "[북토크] 천 개의 파랑, 함께 읽기", channel: "동네책방", duration: "45:12", thumbnailColor: "#457b9d" },
@@ -122,17 +84,3 @@ export const youtubeVideos: YoutubeVideo[] = [
   { id: "y5", bookId: "8", videoId: "mock-5", title: "유발 하라리가 말하는 인류의 미래", channel: "강연모음", duration: "58:44", thumbnailColor: "#660708" },
   { id: "y6", bookId: "1", videoId: "mock-6", title: "수축 사회 — 저자 직강", channel: "경제한잔", duration: "42:10", thumbnailColor: "#2f4858" },
 ];
-
-export function getBook(id: string): Book | undefined {
-  return books.find((b) => b.id === id);
-}
-
-export function getReviews(bookId: string): Review[] {
-  return reviews
-    .filter((r) => r.bookId === bookId)
-    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-}
-
-export function getYoutubeVideos(bookId: string): YoutubeVideo[] {
-  return youtubeVideos.filter((v) => v.bookId === bookId);
-}

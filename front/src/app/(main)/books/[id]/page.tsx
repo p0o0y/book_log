@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CalendarCheck, PenLine, Pencil, Play, Trash2 } from "lucide-react";
-import { getBook, getReviews, getYoutubeVideos } from "@/lib/mock-data";
+import { CalendarCheck, PenLine, Play } from "lucide-react";
+import { getBook, listReviews, listYoutubeVideos } from "@/lib/store";
 import { BookCover } from "@/components/book-cover";
 import { StatusBadge } from "@/components/status-badge";
 import { StarRating } from "@/components/star-rating";
@@ -14,6 +14,11 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { BookActions } from "./book-actions";
+import { ProgressForm } from "./progress-form";
+import { ReviewItemActions } from "./review/review-item-actions";
+
+export const dynamic = "force-dynamic";
 
 export default async function BookDetailPage({
   params,
@@ -24,8 +29,8 @@ export default async function BookDetailPage({
   const book = getBook(id);
   if (!book) notFound();
 
-  const bookReviews = getReviews(book.id);
-  const videos = getYoutubeVideos(book.id);
+  const bookReviews = listReviews(book.id);
+  const videos = listYoutubeVideos(book.id);
   const progress =
     book.status === "reading" && book.currentPage && book.totalPages
       ? Math.round((book.currentPage / book.totalPages) * 100)
@@ -60,13 +65,23 @@ export default async function BookDetailPage({
               <Progress value={progress} />
             </div>
           )}
-          <div className="pt-2">
+          {book.status === "reading" && book.totalPages && (
+            <div className="pt-1">
+              <ProgressForm
+                bookId={book.id}
+                currentPage={book.currentPage}
+                totalPages={book.totalPages}
+              />
+            </div>
+          )}
+          <div className="flex flex-wrap items-center gap-2 pt-2">
             <Button asChild>
               <Link href={`/books/${book.id}/review/new`}>
                 <PenLine className="size-4" />
                 독후감 쓰기
               </Link>
             </Button>
+            <BookActions bookId={book.id} status={book.status} />
           </div>
         </div>
       </section>
@@ -83,8 +98,13 @@ export default async function BookDetailPage({
         </h2>
         {bookReviews.length === 0 ? (
           <Card>
-            <CardContent className="py-10 text-center text-muted-foreground">
-              아직 작성한 독후감이 없어요. 첫 독후감을 남겨보세요!
+            <CardContent className="flex flex-col items-center gap-3 py-10 text-center text-muted-foreground">
+              <p>아직 작성한 독후감이 없어요. 첫 독후감을 남겨보세요!</p>
+              <Button variant="outline" size="sm" asChild>
+                <Link href={`/books/${book.id}/review/new`}>
+                  첫 독후감 쓰기
+                </Link>
+              </Button>
             </CardContent>
           </Card>
         ) : (
@@ -101,14 +121,7 @@ export default async function BookDetailPage({
                       {review.createdAt}
                     </p>
                   </div>
-                  <div className="flex gap-1">
-                    <Button variant="ghost" size="icon" aria-label="수정">
-                      <Pencil className="size-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon" aria-label="삭제">
-                      <Trash2 className="size-4" />
-                    </Button>
-                  </div>
+                  <ReviewItemActions bookId={book.id} reviewId={review.id} />
                 </div>
               </CardHeader>
               <CardContent>

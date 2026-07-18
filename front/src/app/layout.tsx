@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Noto_Sans_KR } from "next/font/google";
+import { Toaster } from "@/components/toaster";
 import "./globals.css";
 
 const notoSansKr = Noto_Sans_KR({
@@ -22,6 +23,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className={`${notoSansKr.variable} font-sans antialiased`}>
         {children}
+        <Toaster />
       </body>
     </html>
   );

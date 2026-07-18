@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { BookOpen, BookmarkPlus, CheckCircle2, Star } from "lucide-react";
-import { books, reviews } from "@/lib/mock-data";
+import { listAllReviews, listBooks } from "@/lib/store";
 import { BookCover } from "@/components/book-cover";
 import { StarRating } from "@/components/star-rating";
 import {
@@ -11,23 +11,33 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-const MONTH_LABELS = ["1월", "2월", "3월", "4월", "5월", "6월", "7월"];
+export const dynamic = "force-dynamic";
 
 export default function DashboardPage() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const currentMonth = now.getMonth(); // 0-based
+
+  const books = listBooks();
+  const reviews = listAllReviews();
   const finished = books.filter((b) => b.status === "finished");
   const finishedThisYear = finished.filter((b) =>
-    b.finishDate?.startsWith("2026")
+    b.finishDate?.startsWith(String(year))
   );
   const reading = books.filter((b) => b.status === "reading");
   const wishlist = books.filter((b) => b.status === "wishlist");
 
   const rated = reviews.filter((r) => r.rating);
   const avgRating =
-    rated.reduce((sum, r) => sum + (r.rating ?? 0), 0) / rated.length;
+    rated.length > 0
+      ? (
+          rated.reduce((sum, r) => sum + (r.rating ?? 0), 0) / rated.length
+        ).toFixed(1)
+      : "-";
 
-  // 월별 완독 수 (2026년)
-  const monthly = MONTH_LABELS.map((label, i) => ({
-    label,
+  // 올해 1월부터 이번 달까지 월별 완독 수
+  const monthly = Array.from({ length: currentMonth + 1 }, (_, i) => ({
+    label: `${i + 1}월`,
     count: finishedThisYear.filter(
       (b) => b.finishDate && new Date(b.finishDate).getMonth() === i
     ).length,
@@ -42,7 +52,7 @@ export default function DashboardPage() {
     { label: "올해 읽은 책", value: `${finishedThisYear.length}권`, icon: CheckCircle2 },
     { label: "읽는 중", value: `${reading.length}권`, icon: BookOpen },
     { label: "찜한 책", value: `${wishlist.length}권`, icon: BookmarkPlus },
-    { label: "평균 별점", value: avgRating.toFixed(1), icon: Star },
+    { label: "평균 별점", value: avgRating, icon: Star },
   ];
 
   return (
@@ -50,7 +60,7 @@ export default function DashboardPage() {
       <div>
         <h1 className="text-2xl font-black">대시보드</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          2026년 나의 독서 기록 요약이에요.
+          {year}년 나의 독서 기록 요약이에요.
         </p>
       </div>
 
@@ -76,7 +86,9 @@ export default function DashboardPage() {
         <Card className="lg:col-span-3">
           <CardHeader>
             <CardTitle>월별 완독</CardTitle>
-            <CardDescription>2026년 1월 – 7월</CardDescription>
+            <CardDescription>
+              {year}년 1월 – {currentMonth + 1}월
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex h-44 items-end gap-3">
