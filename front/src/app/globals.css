@@ -5,8 +5,8 @@
 
 :root {
   --radius: 0.625rem;
-  /* 따뜻한 크림/브라운 톤 (check-inout 참고) */
-  --background: oklch(0.975 0.012 85);
+  /* 흰색 배경 + 브라운 포인트 톤 */
+  --background: oklch(1 0 0);
   --foreground: oklch(0.28 0.03 50);
   --card: oklch(0.99 0.008 90);
   --card-foreground: oklch(0.28 0.03 50);

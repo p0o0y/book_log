@@ -23,7 +23,7 @@ export function PendantLamp() {
         <div className="-mt-1.5 size-4 rounded-full bg-amber-100 shadow-[0_0_28px_14px_rgba(255,205,100,0.6)]" />
         {/* 빛 원뿔 */}
         <div
-          className="-mt-2 h-56 w-72 sm:h-64 sm:w-80"
+          className="-mt-2 h-72 w-80 sm:h-80 sm:w-96"
           style={{
             clipPath: "polygon(50% 0, 100% 100%, 0 100%)",
             background:

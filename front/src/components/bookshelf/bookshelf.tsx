@@ -20,7 +20,7 @@ export function Bookshelf({ books }: { books: Book[] }) {
     <div className="relative">
       {/* 책장 위 가운데 매달린 전등 */}
       <PendantLamp />
-      <div className="pt-20 sm:pt-24">
+      <div className="pt-32 sm:pt-36">
         <div
           className="rounded-lg p-3 shadow-xl sm:p-4"
           style={{
