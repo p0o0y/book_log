@@ -13,15 +13,15 @@
 
 ## 공통 컨텍스트 (모든 Phase 에이전트 필독)
 
-- **프로젝트 위치**: `front/` (Next.js 16.2.10, App Router, React 19, Tailwind v4, shadcn 스타일 자체 UI 컴포넌트 `front/src/components/ui/`)
-- **⚠️ Next.js 버전 주의**: `front/AGENTS.md`에 명시된 대로 이 Next.js 버전은 학습 데이터와 API/컨벤션이 다를 수 있다. 코드 작성 전 `front/node_modules/next/dist/docs/`의 관련 문서를 반드시 확인할 것.
-- **데이터**: `front/src/lib/mock-data.ts` — `Book`, `Review`, `YoutubeVideo` 타입과 배열, `getBook/getReviews/getYoutubeVideos` 헬퍼. DB 없음.
+- **프로젝트 위치**: `web/` (Next.js 16.2.10, App Router, React 19, Tailwind v4, shadcn 스타일 자체 UI 컴포넌트 `web/src/components/ui/`)
+- **⚠️ Next.js 버전 주의**: `web/AGENTS.md`에 명시된 대로 이 Next.js 버전은 학습 데이터와 API/컨벤션이 다를 수 있다. 코드 작성 전 `web/node_modules/next/dist/docs/`의 관련 문서를 반드시 확인할 것.
+- **데이터**: `web/src/lib/mock-data.ts` — `Book`, `Review`, `YoutubeVideo` 타입과 배열, `getBook/getReviews/getYoutubeVideos` 헬퍼. DB 없음.
 - **페이지 구조**:
-  - `/` 서재 (책장/그리드 뷰, 상태 필터) — `front/src/app/(main)/page.tsx`
-  - `/books/[id]` 책 상세 — `front/src/app/(main)/books/[id]/page.tsx`
+  - `/` 서재 (책장/그리드 뷰, 상태 필터) — `web/src/app/(main)/page.tsx`
+  - `/books/[id]` 책 상세 — `web/src/app/(main)/books/[id]/page.tsx`
   - `/books/[id]/review/new` 독후감 작성 — 정적 폼
   - `/books/new` 책 등록 (검색 목업 + 직접 등록 탭) — 정적 폼
   - `/dashboard` 통계 대시보드
   - `/login` 로그인 (Supabase 연동 작업 중 — 이 계획의 범위 밖, 관련 파일 건드리지 말 것: `src/lib/supabase/`, `src/proxy.ts`, `(auth)/login/*`)
-- **개발 서버**: `cd front && npm run dev`
+- **개발 서버**: `cd web && npm run dev`
 - **완료 기준**: 각 Phase의 검증 체크리스트를 실제 브라우저(또는 Playwright MCP)로 확인하고, `npm run lint`와 `npx tsc --noEmit`(또는 `npm run build`)이 통과해야 한다.

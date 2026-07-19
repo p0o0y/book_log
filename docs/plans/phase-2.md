@@ -1,16 +1,16 @@
 # Phase 2 — 독후감 작성/수정/삭제
 
-> 시작 전 [README.md](README.md)의 공통 컨텍스트를 읽을 것. **선행 조건: Phase 1 완료** (인메모리 저장소 `front/src/lib/store.ts` 존재).
+> 시작 전 [README.md](README.md)의 공통 컨텍스트를 읽을 것. **선행 조건: Phase 1 완료** (인메모리 저장소 `web/src/lib/store.ts` 존재).
 
 ## 오버뷰
 
-책 상세 페이지(`/books/[id]`)에는 독후감 목록과 수정(Pencil)/삭제(Trash2) 아이콘 버튼, "독후감 쓰기" 버튼이 있지만 전부 동작하지 않는다. 독후감 작성 페이지(`/books/[id]/review/new`)의 폼도 정적이며, 별점 입력 컴포넌트(`front/src/components/star-rating-input.tsx`)는 폼 값과 연결되어 있지 않다.
+책 상세 페이지(`/books/[id]`)에는 독후감 목록과 수정(Pencil)/삭제(Trash2) 아이콘 버튼, "독후감 쓰기" 버튼이 있지만 전부 동작하지 않는다. 독후감 작성 페이지(`/books/[id]/review/new`)의 폼도 정적이며, 별점 입력 컴포넌트(`web/src/components/star-rating-input.tsx`)는 폼 값과 연결되어 있지 않다.
 
 이번 단계에서는 독후감 CRUD를 완성한다: 작성 폼 제출 → 저장소에 추가, 기존 독후감 수정 페이지 신설, 삭제 동작(확인 후 삭제). `Review` 타입은 `{ id, bookId, rating?, oneLiner, content, createdAt }`이며 한 책에 여러 독후감(재독 리뷰)이 허용된다.
 
 **구현 방침**
 - 저장소에 `addReview`, `updateReview`, `deleteReview` 구현 (Phase 1에서 시그니처만 있다면 완성).
-- 서버 액션은 `front/src/app/(main)/books/[id]/review/` 하위에 배치.
+- 서버 액션은 `web/src/app/(main)/books/[id]/review/` 하위에 배치.
 - `StarRatingInput`을 제어 컴포넌트로 만들고 hidden input 등으로 폼 데이터에 rating이 포함되게 한다. 별점은 선택 사항(없으면 undefined).
 - 수정 페이지는 `/books/[id]/review/[reviewId]/edit` 라우트 신설 — 작성 페이지와 폼을 공유 컴포넌트로 추출해 초기값만 주입.
 - 삭제는 실수 방지를 위해 confirm 단계(브라우저 confirm 또는 간단한 확인 UI)를 거친다.

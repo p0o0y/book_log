@@ -21,7 +21,7 @@
 
 ## 폴더 구조
 
-- `front/` — Next.js 앱 전체 (이름과 달리 서버 액션 포함 풀스택. `web`으로 개명 예정)
+- `web/` — Next.js 앱 전체 (서버 액션 포함 풀스택)
   - `src/lib/store.ts` — **모든 데이터 접근의 단일 창구** (Supabase 쿼리)
   - `src/lib/aladin.ts` / `youtube.ts` / `cover-color.ts` — 외부 연동·색 추출 (서버 전용)
   - `src/app/(main)/**/actions.ts` — 서버 액션 (= 컨트롤러)
@@ -34,7 +34,7 @@
 | 서버 | 용도 | 비고 |
 |---|---|---|
 | **supabase** | DB 마이그레이션 적용, SQL 실행, TypeScript 타입 생성 | 원격 MCP. `/mcp`에서 OAuth 인증. 프로젝트 `etkvdtmhjhgjsfhmacps`로 제한 |
-| **context7** | 라이브러리 최신 공식문서 조회 (@supabase/ssr, Next.js 등) | 이 Next.js 버전은 학습데이터와 달라 문서 확인 필수 (`front/AGENTS.md`) |
+| **context7** | 라이브러리 최신 공식문서 조회 (@supabase/ssr, Next.js 등) | 이 Next.js 버전은 학습데이터와 달라 문서 확인 필수 (`web/AGENTS.md`) |
 | **playwright** | 브라우저 자동화 — 구현 후 실제 화면 검증(E2E), 스크린샷 | Claude 검증용 창이 뜨면 닫지 말 것 (테스트 계정 세션) |
 
 ## .claude 커스텀 명령어 (슬래시 커맨드)
@@ -59,7 +59,7 @@
 ## 자주 쓰는 명령
 
 ```bash
-cd front
+cd web
 npm run dev        # 개발 서버 (http://localhost:3000)
 npm run build      # 프로덕션 빌드 (배포 전 확인)
 npx tsc --noEmit   # 타입 체크
