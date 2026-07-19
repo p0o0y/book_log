@@ -50,8 +50,13 @@ export default async function ShelfPage({
 
   const books = await listBooks();
   const keyword = q.toLowerCase();
+  // 찜은 읽기 상태와 독립 플래그 — 찜 필터만 isWishlisted 기준
   const filtered = books
-    .filter((b) => filter === "all" || b.status === filter)
+    .filter(
+      (b) =>
+        filter === "all" ||
+        (filter === "wishlist" ? b.isWishlisted : b.status === filter)
+    )
     .filter(
       (b) =>
         keyword === "" ||
@@ -64,7 +69,7 @@ export default async function ShelfPage({
     all: books.length,
     reading: books.filter((b) => b.status === "reading").length,
     finished: books.filter((b) => b.status === "finished").length,
-    wishlist: books.filter((b) => b.status === "wishlist").length,
+    wishlist: books.filter((b) => b.isWishlisted).length,
   };
 
   return (
@@ -91,7 +96,11 @@ export default async function ShelfPage({
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              {f === "all" ? "전체" : STATUS_LABEL[f as BookStatus]}
+              {f === "all"
+                ? "전체"
+                : f === "wishlist"
+                  ? "찜"
+                  : STATUS_LABEL[f as BookStatus]}
               <span className="ml-1 text-xs text-muted-foreground">
                 {counts[f]}
               </span>

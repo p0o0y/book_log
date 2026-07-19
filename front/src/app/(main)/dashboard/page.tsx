@@ -24,7 +24,7 @@ export default async function DashboardPage() {
     b.finishDate?.startsWith(String(year))
   );
   const reading = books.filter((b) => b.status === "reading");
-  const wishlist = books.filter((b) => b.status === "wishlist");
+  const wishlist = books.filter((b) => b.isWishlisted);
 
   const rated = reviews.filter((r) => r.rating);
   const avgRating =

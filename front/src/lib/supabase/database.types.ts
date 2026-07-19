@@ -22,8 +22,10 @@ export type Database = {
           current_page: number | null
           finish_date: string | null
           id: string
+          is_wishlisted: boolean
           publisher: string | null
           spine_color: string
+          spine_palette: Json | null
           spine_text_color: string
           start_date: string | null
           status: Database["public"]["Enums"]["book_status"]
@@ -38,8 +40,10 @@ export type Database = {
           current_page?: number | null
           finish_date?: string | null
           id?: string
+          is_wishlisted?: boolean
           publisher?: string | null
           spine_color: string
+          spine_palette?: Json | null
           spine_text_color: string
           start_date?: string | null
           status?: Database["public"]["Enums"]["book_status"]
@@ -54,8 +58,10 @@ export type Database = {
           current_page?: number | null
           finish_date?: string | null
           id?: string
+          is_wishlisted?: boolean
           publisher?: string | null
           spine_color?: string
+          spine_palette?: Json | null
           spine_text_color?: string
           start_date?: string | null
           status?: Database["public"]["Enums"]["book_status"]

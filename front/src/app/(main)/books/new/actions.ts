@@ -1,9 +1,39 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { searchAladinBooks, lookupAladinPages, type AladinBook } from "@/lib/aladin";
+import { extractCoverColors } from "@/lib/cover-color";
 import { assignSpineColors } from "@/lib/spine-palette";
 import { addBook, updateBook } from "@/lib/store";
 import type { BookStatus } from "@/lib/types";
+
+export type BookSearchResult =
+  | { error: string; items?: undefined }
+  | { error?: undefined; items: AladinBook[] };
+
+/** 알라딘 책 검색 (검색 탭에서 사용) */
+export async function searchBooksAction(query: string): Promise<BookSearchResult> {
+  const trimmed = query.trim();
+  if (trimmed === "") return { items: [] };
+  try {
+    return { items: await searchAladinBooks(trimmed) };
+  } catch (e) {
+    return {
+      error: e instanceof Error ? e.message : "검색 중 오류가 발생했어요.",
+    };
+  }
+}
+
+/** 검색 결과 선택 시 쪽수를 추가 조회한다. 실패해도 쪽수 없이 진행. */
+export async function lookupPagesAction(
+  isbn13: string
+): Promise<number | undefined> {
+  try {
+    return await lookupAladinPages(isbn13);
+  } catch {
+    return undefined;
+  }
+}
 
 export type BookFormState = {
   error: string | null;
@@ -77,8 +107,14 @@ export async function saveBook(
   const bookId = formData.get("bookId");
   let savedId: string;
 
+  // 표지가 있으면 실제 표지에서 책등 색(1~2색)을 추출한다. 실패 시 폴백.
+  const extracted = fields.coverImageUrl
+    ? await extractCoverColors(fields.coverImageUrl)
+    : null;
+
   if (typeof bookId === "string" && bookId !== "") {
-    const updated = await updateBook(bookId, fields);
+    // 수정 시 추출에 성공한 경우에만 색을 갱신한다 (기존 색 보존)
+    const updated = await updateBook(bookId, { ...fields, ...(extracted ?? {}) });
     if (!updated) {
       return { error: "수정하려는 책을 찾을 수 없어요." };
     }
@@ -86,7 +122,8 @@ export async function saveBook(
   } else {
     const book = await addBook({
       ...fields,
-      ...assignSpineColors(`${fields.title}-${fields.author}`),
+      isWishlisted: false,
+      ...(extracted ?? assignSpineColors(`${fields.title}-${fields.author}`)),
     });
     savedId = book.id;
   }

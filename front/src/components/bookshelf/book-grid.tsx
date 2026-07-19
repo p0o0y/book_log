@@ -17,7 +17,14 @@ export function BookGrid({ books }: { books: Book[] }) {
           <div className="mt-3 space-y-1">
             <p className="truncate text-sm font-bold">{book.title}</p>
             <p className="truncate text-xs text-muted-foreground">{book.author}</p>
-            <StatusBadge status={book.status} className="text-[10px]" />
+            <span className="flex items-center gap-1">
+              <StatusBadge status={book.status} className="text-[10px]" />
+              {book.isWishlisted && (
+                <span className="text-xs text-amber-500" aria-label="찜">
+                  ★
+                </span>
+              )}
+            </span>
           </div>
         </Link>
       ))}

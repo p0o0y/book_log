@@ -5,10 +5,10 @@ import { useActionState, useEffect } from "react";
 import {
   BookOpen,
   CheckCircle2,
-  Heart,
-  HeartOff,
   Pencil,
   RotateCcw,
+  Star,
+  StarOff,
   Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ import type { BookStatus } from "@/lib/types";
 import {
   changeBookStatus,
   deleteBookAction,
+  toggleWishlist,
   type BookActionState,
 } from "./actions";
 
@@ -27,18 +28,28 @@ const initialState: BookActionState = { message: null };
 export function BookActions({
   bookId,
   status,
+  isWishlisted,
 }: {
   bookId: string;
   status: BookStatus;
+  isWishlisted: boolean;
 }) {
   const [statusState, statusAction] = useActionState(
     changeBookStatus,
+    initialState
+  );
+  const [wishlistState, wishlistAction] = useActionState(
+    toggleWishlist,
     initialState
   );
 
   useEffect(() => {
     if (statusState.message) toast(statusState.message);
   }, [statusState]);
+
+  useEffect(() => {
+    if (wishlistState.message) toast(wishlistState.message);
+  }, [wishlistState]);
 
   const nextStatus =
     status === "wishlist"
@@ -57,34 +68,23 @@ export function BookActions({
           {nextStatus.label}
         </PendingButton>
       </form>
-      {status === "wishlist" ? (
-        // 찜 해제 = 서재에서 제거 (삭제 후 서버 redirect로 서재 이동)
-        <form
-          action={deleteBookAction}
-          onSubmit={(e) => {
-            if (!confirm("찜을 해제할까요? 이 책이 서재에서 제거돼요.")) {
-              e.preventDefault();
-              return;
-            }
-            toast("찜을 해제했어요.");
-          }}
-        >
-          <input type="hidden" name="bookId" value={bookId} />
-          <PendingButton variant="outline">
-            <HeartOff className="size-4" />
-            찜 해제
-          </PendingButton>
-        </form>
-      ) : (
-        <form action={statusAction}>
-          <input type="hidden" name="bookId" value={bookId} />
-          <input type="hidden" name="status" value="wishlist" />
-          <PendingButton variant="outline">
-            <Heart className="size-4" />
-            찜하기
-          </PendingButton>
-        </form>
-      )}
+      {/* 찜은 읽기 상태와 독립적인 플래그 — 토글해도 책과 기록은 유지된다 */}
+      <form action={wishlistAction}>
+        <input type="hidden" name="bookId" value={bookId} />
+        <PendingButton variant="outline">
+          {isWishlisted ? (
+            <>
+              <StarOff className="size-4" />
+              찜 해제
+            </>
+          ) : (
+            <>
+              <Star className="size-4" />
+              찜하기
+            </>
+          )}
+        </PendingButton>
+      </form>
       <Button variant="outline" asChild>
         <Link href={`/books/${bookId}/edit`}>
           <Pencil className="size-4" />

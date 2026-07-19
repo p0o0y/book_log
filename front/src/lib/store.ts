@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/lib/supabase/database.types";
-import type { Book, Review, YoutubeVideo } from "./types";
+import type { Book, Review, SpineBand, YoutubeVideo } from "./types";
 
 /**
  * Supabase 데이터 저장소.
@@ -25,11 +25,13 @@ function toBook(row: BookRow): Book {
     publisher: row.publisher ?? undefined,
     coverImageUrl: row.cover_image_url ?? undefined,
     status: row.status,
+    isWishlisted: row.is_wishlisted,
     startDate: row.start_date ?? undefined,
     finishDate: row.finish_date ?? undefined,
     currentPage: row.current_page ?? undefined,
     totalPages: row.total_pages ?? undefined,
     spineColor: row.spine_color,
+    spinePalette: (row.spine_palette as unknown as SpineBand[] | null) ?? undefined,
     spineTextColor: row.spine_text_color,
   };
 }
@@ -63,11 +65,13 @@ const BOOK_COLUMN = {
   publisher: "publisher",
   coverImageUrl: "cover_image_url",
   status: "status",
+  isWishlisted: "is_wishlisted",
   startDate: "start_date",
   finishDate: "finish_date",
   currentPage: "current_page",
   totalPages: "total_pages",
   spineColor: "spine_color",
+  spinePalette: "spine_palette",
   spineTextColor: "spine_text_color",
 } as const;
 
@@ -134,11 +138,13 @@ export async function addBook(input: NewBookInput): Promise<Book> {
       publisher: input.publisher ?? null,
       cover_image_url: input.coverImageUrl ?? null,
       status: input.status,
+      is_wishlisted: input.isWishlisted,
       start_date: input.startDate ?? null,
       finish_date: input.finishDate ?? null,
       current_page: input.currentPage ?? null,
       total_pages: input.totalPages ?? null,
       spine_color: input.spineColor,
+      spine_palette: (input.spinePalette as unknown as Database["public"]["Tables"]["books"]["Insert"]["spine_palette"]) ?? null,
       spine_text_color: input.spineTextColor,
     })
     .select()

@@ -1,11 +1,8 @@
-import { listBooks } from "@/lib/store";
 import { NewBookTabs } from "./new-book-tabs";
 
 export const dynamic = "force-dynamic";
 
-export default async function NewBookPage() {
-  const books = await listBooks();
-
+export default function NewBookPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
@@ -15,7 +12,7 @@ export default async function NewBookPage() {
         </p>
       </div>
 
-      <NewBookTabs books={books} />
+      <NewBookTabs />
     </div>
   );
 }

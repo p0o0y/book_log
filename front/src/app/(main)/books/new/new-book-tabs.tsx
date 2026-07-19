@@ -7,11 +7,10 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import type { Book } from "@/lib/types";
 import { BookForm, type BookFormPrefill } from "./book-form";
 import { SearchTab } from "./search-tab";
 
-export function NewBookTabs({ books }: { books: Book[] }) {
+export function NewBookTabs() {
   const [tab, setTab] = useState("search");
   const [prefill, setPrefill] = useState<BookFormPrefill | undefined>();
   // 선택할 때마다 key를 바꿔 폼의 defaultValue가 새로 반영되게 한다
@@ -31,7 +30,7 @@ export function NewBookTabs({ books }: { books: Book[] }) {
       </TabsList>
 
       <TabsContent value="search" className="pt-2">
-        <SearchTab books={books} onSelect={handleSelect} />
+        <SearchTab onSelect={handleSelect} />
       </TabsContent>
 
       <TabsContent value="manual" className="pt-2">

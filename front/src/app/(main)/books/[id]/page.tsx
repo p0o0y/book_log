@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CalendarCheck, PenLine, Play } from "lucide-react";
+import { CalendarCheck, PenLine, Play, Star } from "lucide-react";
 import { getBook, listReviews, listYoutubeVideos } from "@/lib/store";
 import { BookCover } from "@/components/book-cover";
 import { StatusBadge } from "@/components/status-badge";
@@ -44,7 +44,14 @@ export default async function BookDetailPage({
       <section className="flex flex-col gap-6 sm:flex-row">
         <BookCover book={book} className="w-40 shrink-0 sm:w-48" />
         <div className="flex-1 space-y-3">
-          <StatusBadge status={book.status} />
+          <div className="flex items-center gap-1.5">
+            <StatusBadge status={book.status} />
+            {book.isWishlisted && (
+              <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">
+                <Star className="size-3 fill-current" />찜
+              </span>
+            )}
+          </div>
           <h1 className="text-3xl font-black">{book.title}</h1>
           <p className="text-muted-foreground">
             {book.author}
@@ -83,7 +90,11 @@ export default async function BookDetailPage({
                 독후감 쓰기
               </Link>
             </Button>
-            <BookActions bookId={book.id} status={book.status} />
+            <BookActions
+              bookId={book.id}
+              status={book.status}
+              isWishlisted={book.isWishlisted}
+            />
           </div>
         </div>
       </section>

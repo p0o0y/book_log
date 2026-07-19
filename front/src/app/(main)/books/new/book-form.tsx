@@ -114,7 +114,7 @@ export function BookForm({
             <SelectContent>
               <SelectItem value="reading">읽는 중</SelectItem>
               <SelectItem value="finished">완독</SelectItem>
-              <SelectItem value="wishlist">읽고 싶은 책 (찜)</SelectItem>
+              <SelectItem value="wishlist">미시작</SelectItem>
             </SelectContent>
           </Select>
         </div>

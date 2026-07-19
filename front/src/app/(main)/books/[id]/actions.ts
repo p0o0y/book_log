@@ -57,6 +57,26 @@ export async function changeBookStatus(
   };
 }
 
+/** 찜 토글 — 읽기 상태와 독립적으로 플래그만 바꾼다 (기록 보존) */
+export async function toggleWishlist(
+  _prevState: BookActionState,
+  formData: FormData
+): Promise<BookActionState> {
+  const bookId = formData.get("bookId");
+  if (typeof bookId !== "string") return { message: null };
+
+  const book = await getBook(bookId);
+  if (!book) return { message: null };
+
+  await updateBook(bookId, { isWishlisted: !book.isWishlisted });
+  revalidateBook(bookId);
+  return {
+    message: book.isWishlisted
+      ? `'${book.title}' 찜을 해제했어요.`
+      : `'${book.title}'을(를) 찜했어요.`,
+  };
+}
+
 export async function updateProgress(
   _prevState: ProgressFormState,
   formData: FormData
