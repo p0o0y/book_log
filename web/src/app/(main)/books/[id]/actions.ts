@@ -8,9 +8,14 @@ import {
   deleteYoutubeVideo,
   getBook,
   getYoutubeVideo,
+  listYoutubeVideos,
   updateBook,
 } from "@/lib/store";
-import { fetchYoutubeOembed, parseYoutubeVideoId } from "@/lib/youtube";
+import {
+  fetchYoutubeOembed,
+  parseYoutubeVideoId,
+  searchTopReviewVideo,
+} from "@/lib/youtube";
 import { STATUS_LABEL, type Book, type BookStatus } from "@/lib/types";
 
 export type ProgressFormState = {
@@ -46,6 +51,23 @@ function statusPatch(book: Book, status: BookStatus): Partial<Book> {
   return { status, startDate: undefined, finishDate: undefined, currentPage: undefined };
 }
 
+/**
+ * 완독 시 리뷰 영상 자동 추천 — 등록된 영상이 없을 때만 조회수 1위 영상을 넣는다.
+ * 검색/등록이 실패해도 완독 처리는 그대로 진행되도록 조용히 넘어간다.
+ */
+async function recommendVideoOnFinish(book: Book): Promise<boolean> {
+  try {
+    const existing = await listYoutubeVideos(book.id);
+    if (existing.length > 0) return false;
+    const video = await searchTopReviewVideo(book.title);
+    if (!video) return false;
+    await addYoutubeVideo({ bookId: book.id, ...video });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function changeBookStatus(
   _prevState: BookActionState,
   formData: FormData
@@ -59,9 +81,15 @@ export async function changeBookStatus(
   if (!book) return { message: null };
 
   await updateBook(bookId, statusPatch(book, status as BookStatus));
+  const recommended =
+    status === "finished" && book.status !== "finished"
+      ? await recommendVideoOnFinish(book)
+      : false;
   revalidateBook(bookId);
   return {
-    message: `'${book.title}'을(를) ${STATUS_LABEL[status as BookStatus]} 상태로 변경했어요.`,
+    message: recommended
+      ? `'${book.title}'을(를) 완독 처리하고 리뷰 영상을 추천해뒀어요.`
+      : `'${book.title}'을(를) ${STATUS_LABEL[status as BookStatus]} 상태로 변경했어요.`,
   };
 }
 
@@ -110,12 +138,18 @@ export async function updateProgress(
     currentPage,
     ...(finished ? statusPatch(book, "finished") : {}),
   });
+  const recommended =
+    finished && book.status !== "finished"
+      ? await recommendVideoOnFinish(book)
+      : false;
 
   revalidateBook(bookId);
   return {
     error: null,
     message: finished
-      ? "마지막 페이지까지 읽어 완독 처리했어요!"
+      ? recommended
+        ? "마지막 페이지까지 읽어 완독 처리하고 리뷰 영상을 추천해뒀어요!"
+        : "마지막 페이지까지 읽어 완독 처리했어요!"
       : "진행률을 저장했어요.",
   };
 }
