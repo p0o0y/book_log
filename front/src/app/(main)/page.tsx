@@ -48,7 +48,7 @@ export default async function ShelfPage({
     : "recent";
   const params: ShelfParams = { status: filter, view, q, sort };
 
-  const books = listBooks();
+  const books = await listBooks();
   const keyword = q.toLowerCase();
   const filtered = books
     .filter((b) => filter === "all" || b.status === filter)

@@ -3,8 +3,8 @@ import { NewBookTabs } from "./new-book-tabs";
 
 export const dynamic = "force-dynamic";
 
-export default function NewBookPage() {
-  const books = listBooks();
+export default async function NewBookPage() {
+  const books = await listBooks();
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">

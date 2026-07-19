@@ -26,11 +26,13 @@ export default async function BookDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const book = getBook(id);
+  const book = await getBook(id);
   if (!book) notFound();
 
-  const bookReviews = listReviews(book.id);
-  const videos = listYoutubeVideos(book.id);
+  const [bookReviews, videos] = await Promise.all([
+    listReviews(book.id),
+    listYoutubeVideos(book.id),
+  ]);
   const progress =
     book.status === "reading" && book.currentPage && book.totalPages
       ? Math.round((book.currentPage / book.totalPages) * 100)

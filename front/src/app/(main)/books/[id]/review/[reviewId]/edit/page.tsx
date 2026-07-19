@@ -16,8 +16,8 @@ export default async function EditReviewPage({
   params: Promise<{ id: string; reviewId: string }>;
 }) {
   const { id, reviewId } = await params;
-  const book = getBook(id);
-  const review = getReview(reviewId);
+  const book = await getBook(id);
+  const review = await getReview(reviewId);
   if (!book || !review || review.bookId !== book.id) notFound();
 
   return (

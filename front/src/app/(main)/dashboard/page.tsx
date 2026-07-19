@@ -13,13 +13,12 @@ import {
 
 export const dynamic = "force-dynamic";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
   const now = new Date();
   const year = now.getFullYear();
   const currentMonth = now.getMonth(); // 0-based
 
-  const books = listBooks();
-  const reviews = listAllReviews();
+  const [books, reviews] = await Promise.all([listBooks(), listAllReviews()]);
   const finished = books.filter((b) => b.status === "finished");
   const finishedThisYear = finished.filter((b) =>
     b.finishDate?.startsWith(String(year))

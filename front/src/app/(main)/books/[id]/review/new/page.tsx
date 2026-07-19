@@ -16,7 +16,7 @@ export default async function NewReviewPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const book = getBook(id);
+  const book = await getBook(id);
   if (!book) notFound();
 
   return (

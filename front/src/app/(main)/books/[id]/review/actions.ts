@@ -35,7 +35,7 @@ export async function saveReview(
   formData: FormData
 ): Promise<ReviewFormState> {
   const bookId = formData.get("bookId");
-  if (typeof bookId !== "string" || !getBook(bookId)) {
+  if (typeof bookId !== "string" || !(await getBook(bookId))) {
     return { error: "존재하지 않는 책이에요." };
   }
 
@@ -53,7 +53,7 @@ export async function saveReview(
   const isEdit = typeof reviewId === "string" && reviewId !== "";
 
   if (isEdit) {
-    const updated = updateReview(reviewId as string, {
+    const updated = await updateReview(reviewId as string, {
       rating,
       oneLiner: oneLinerText,
       content: contentText,
@@ -62,12 +62,11 @@ export async function saveReview(
       return { error: "수정하려는 독후감을 찾을 수 없어요." };
     }
   } else {
-    addReview({
+    await addReview({
       bookId,
       rating,
       oneLiner: oneLinerText,
       content: contentText,
-      createdAt: new Date().toISOString().slice(0, 10),
     });
   }
 
@@ -87,10 +86,10 @@ export async function deleteReviewAction(
   const reviewId = formData.get("reviewId");
   if (typeof reviewId !== "string") return { message: null };
 
-  const review = getReview(reviewId);
+  const review = await getReview(reviewId);
   if (!review) return { message: null };
 
-  deleteReview(reviewId);
+  await deleteReview(reviewId);
   revalidatePath(`/books/${review.bookId}`);
   revalidatePath("/dashboard");
   return { message: "독후감을 삭제했어요." };

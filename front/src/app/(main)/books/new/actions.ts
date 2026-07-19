@@ -78,13 +78,13 @@ export async function saveBook(
   let savedId: string;
 
   if (typeof bookId === "string" && bookId !== "") {
-    const updated = updateBook(bookId, fields);
+    const updated = await updateBook(bookId, fields);
     if (!updated) {
       return { error: "수정하려는 책을 찾을 수 없어요." };
     }
     savedId = updated.id;
   } else {
-    const book = addBook({
+    const book = await addBook({
       ...fields,
       ...assignSpineColors(`${fields.title}-${fields.author}`),
     });

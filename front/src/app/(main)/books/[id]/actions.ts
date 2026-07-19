@@ -47,10 +47,10 @@ export async function changeBookStatus(
   if (typeof bookId !== "string" || !STATUSES.includes(status as BookStatus)) {
     return { message: null };
   }
-  const book = getBook(bookId);
+  const book = await getBook(bookId);
   if (!book) return { message: null };
 
-  updateBook(bookId, statusPatch(book, status as BookStatus));
+  await updateBook(bookId, statusPatch(book, status as BookStatus));
   revalidateBook(bookId);
   return {
     message: `'${book.title}'을(를) ${STATUS_LABEL[status as BookStatus]} 상태로 변경했어요.`,
@@ -64,7 +64,7 @@ export async function updateProgress(
   const bookId = formData.get("bookId");
   if (typeof bookId !== "string") return { error: "잘못된 요청이에요." };
 
-  const book = getBook(bookId);
+  const book = await getBook(bookId);
   if (!book) return { error: "존재하지 않는 책이에요." };
 
   const raw = formData.get("currentPage");
@@ -78,7 +78,7 @@ export async function updateProgress(
 
   // 마지막 페이지 도달 시 자동 완독 처리
   const finished = book.totalPages !== undefined && currentPage === book.totalPages;
-  updateBook(bookId, {
+  await updateBook(bookId, {
     currentPage,
     ...(finished ? statusPatch(book, "finished") : {}),
   });
@@ -101,7 +101,7 @@ export async function deleteBookAction(formData: FormData): Promise<void> {
   const bookId = formData.get("bookId");
   if (typeof bookId !== "string") return;
 
-  const deleted = deleteBook(bookId);
+  const deleted = await deleteBook(bookId);
   if (!deleted) return;
 
   revalidatePath("/");
