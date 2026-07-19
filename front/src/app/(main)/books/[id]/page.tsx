@@ -17,6 +17,7 @@ import { Separator } from "@/components/ui/separator";
 import { BookActions } from "./book-actions";
 import { ProgressForm } from "./progress-form";
 import { ReviewItemActions } from "./review/review-item-actions";
+import { VideoDeleteButton, VideoForm } from "./video-form";
 
 export const dynamic = "force-dynamic";
 
@@ -149,37 +150,57 @@ export default async function BookDetailPage({
 
       <Separator />
 
-      {/* 관련 유튜브 영상 */}
+      {/* 관련 유튜브 영상 — URL 붙여넣기로 직접 등록 */}
       <section className="space-y-4">
         <div>
           <h2 className="text-xl font-bold">관련 유튜브 영상</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            &lsquo;{book.title} {book.author}&rsquo; 검색 결과
+            이 책과 관련된 영상 링크를 모아둘 수 있어요.
           </p>
         </div>
+        <VideoForm bookId={book.id} />
         {videos.length === 0 ? (
           <Card>
             <CardContent className="py-10 text-center text-muted-foreground">
-              관련 영상을 찾지 못했어요.
+              아직 등록한 영상이 없어요. 유튜브 링크를 붙여넣어 추가해보세요.
             </CardContent>
           </Card>
         ) : (
           <div className="flex gap-4 overflow-x-auto pb-2">
             {videos.map((video) => (
-              <div key={video.id} className="w-64 shrink-0">
-                <div
-                  className="group relative flex aspect-video cursor-pointer items-center justify-center rounded-lg shadow-sm"
-                  style={{
-                    background: `linear-gradient(135deg, ${video.thumbnailColor} 0%, #1a1a1a 100%)`,
-                  }}
+              <div key={video.id} className="group relative w-64 shrink-0">
+                <a
+                  href={`https://www.youtube.com/watch?v=${video.videoId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative flex aspect-video items-center justify-center overflow-hidden rounded-lg shadow-sm"
+                  style={
+                    video.thumbnailUrl
+                      ? undefined
+                      : {
+                          background: `linear-gradient(135deg, ${video.thumbnailColor ?? "#444"} 0%, #1a1a1a 100%)`,
+                        }
+                  }
                 >
-                  <span className="flex size-12 items-center justify-center rounded-full bg-black/60 transition-transform group-hover:scale-110">
+                  {video.thumbnailUrl && (
+                    // 유튜브 썸네일 CDN — next/image 원격 설정 대신 img 사용
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={video.thumbnailUrl}
+                      alt=""
+                      className="absolute inset-0 size-full object-cover"
+                    />
+                  )}
+                  <span className="relative flex size-12 items-center justify-center rounded-full bg-black/60 transition-transform group-hover:scale-110">
                     <Play className="size-5 fill-white text-white" />
                   </span>
-                  <span className="absolute bottom-2 right-2 rounded bg-black/70 px-1.5 py-0.5 text-[11px] text-white">
-                    {video.duration}
-                  </span>
-                </div>
+                  {video.duration && (
+                    <span className="absolute bottom-2 right-2 rounded bg-black/70 px-1.5 py-0.5 text-[11px] text-white">
+                      {video.duration}
+                    </span>
+                  )}
+                </a>
+                <VideoDeleteButton videoId={video.id} />
                 <p className="mt-2 line-clamp-2 text-sm font-medium leading-snug">
                   {video.title}
                 </p>

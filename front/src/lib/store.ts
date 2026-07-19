@@ -54,8 +54,9 @@ function toYoutubeVideo(row: YoutubeVideoRow): YoutubeVideo {
     videoId: row.video_id,
     title: row.title,
     channel: row.channel,
-    duration: row.duration,
-    thumbnailColor: row.thumbnail_color,
+    duration: row.duration ?? undefined,
+    thumbnailUrl: row.thumbnail_url ?? undefined,
+    thumbnailColor: row.thumbnail_color ?? undefined,
   };
 }
 
@@ -273,7 +274,57 @@ export async function listYoutubeVideos(bookId: string): Promise<YoutubeVideo[]>
   const { data, error } = await supabase
     .from("youtube_videos")
     .select("*")
-    .eq("book_id", bookId);
+    .eq("book_id", bookId)
+    .order("created_at", { ascending: false });
   if (error) throw new Error(`영상 목록 조회 실패: ${error.message}`);
   return data.map(toYoutubeVideo);
+}
+
+export type NewYoutubeVideoInput = Omit<YoutubeVideo, "id">;
+
+export async function addYoutubeVideo(
+  input: NewYoutubeVideoInput
+): Promise<YoutubeVideo> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("youtube_videos")
+    .insert({
+      book_id: input.bookId,
+      video_id: input.videoId,
+      title: input.title,
+      channel: input.channel,
+      duration: input.duration ?? null,
+      thumbnail_url: input.thumbnailUrl ?? null,
+      thumbnail_color: input.thumbnailColor ?? null,
+    })
+    .select()
+    .single();
+  if (error) throw new Error(`영상 등록 실패: ${error.message}`);
+  return toYoutubeVideo(data);
+}
+
+export async function getYoutubeVideo(
+  id: string
+): Promise<YoutubeVideo | undefined> {
+  if (!UUID_RE.test(id)) return undefined;
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("youtube_videos")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw new Error(`영상 조회 실패: ${error.message}`);
+  return data ? toYoutubeVideo(data) : undefined;
+}
+
+export async function deleteYoutubeVideo(id: string): Promise<boolean> {
+  if (!UUID_RE.test(id)) return false;
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("youtube_videos")
+    .delete()
+    .eq("id", id)
+    .select("id");
+  if (error) throw new Error(`영상 삭제 실패: ${error.message}`);
+  return data.length > 0;
 }

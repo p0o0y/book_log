@@ -111,9 +111,10 @@ export type Database = {
           book_id: string
           channel: string
           created_at: string
-          duration: string
+          duration: string | null
           id: string
-          thumbnail_color: string
+          thumbnail_color: string | null
+          thumbnail_url: string | null
           title: string
           video_id: string
         }
@@ -121,9 +122,10 @@ export type Database = {
           book_id: string
           channel: string
           created_at?: string
-          duration: string
+          duration?: string | null
           id?: string
-          thumbnail_color: string
+          thumbnail_color?: string | null
+          thumbnail_url?: string | null
           title: string
           video_id: string
         }
@@ -131,9 +133,10 @@ export type Database = {
           book_id?: string
           channel?: string
           created_at?: string
-          duration?: string
+          duration?: string | null
           id?: string
-          thumbnail_color?: string
+          thumbnail_color?: string | null
+          thumbnail_url?: string | null
           title?: string
           video_id?: string
         }

@@ -43,8 +43,11 @@ export interface YoutubeVideo {
   videoId: string;
   title: string;
   channel: string;
-  duration: string;
-  thumbnailColor: string;
+  /** oEmbed에는 재생시간이 없어 수동 등록 영상은 비어 있다 */
+  duration?: string;
+  /** 실제 썸네일 이미지 — 없으면 thumbnailColor 그라데이션 폴백 */
+  thumbnailUrl?: string;
+  thumbnailColor?: string;
 }
 
 export const STATUS_LABEL: Record<BookStatus, string> = {

@@ -2,7 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { deleteBook, getBook, updateBook } from "@/lib/store";
+import {
+  addYoutubeVideo,
+  deleteBook,
+  deleteYoutubeVideo,
+  getBook,
+  getYoutubeVideo,
+  updateBook,
+} from "@/lib/store";
+import { fetchYoutubeOembed, parseYoutubeVideoId } from "@/lib/youtube";
 import { STATUS_LABEL, type Book, type BookStatus } from "@/lib/types";
 
 export type ProgressFormState = {
@@ -110,6 +118,61 @@ export async function updateProgress(
       ? "마지막 페이지까지 읽어 완독 처리했어요!"
       : "진행률을 저장했어요.",
   };
+}
+
+export type VideoFormState = {
+  error: string | null;
+  message?: string;
+};
+
+/** 유튜브 URL을 받아 oEmbed로 제목/채널/썸네일을 채워 등록한다 */
+export async function addYoutubeVideoAction(
+  _prevState: VideoFormState,
+  formData: FormData
+): Promise<VideoFormState> {
+  const bookId = formData.get("bookId");
+  const url = formData.get("url");
+  if (typeof bookId !== "string" || typeof url !== "string") {
+    return { error: "잘못된 요청이에요." };
+  }
+
+  const book = await getBook(bookId);
+  if (!book) return { error: "존재하지 않는 책이에요." };
+
+  const videoId = parseYoutubeVideoId(url);
+  if (!videoId) {
+    return { error: "유튜브 영상 URL이 아니에요. 영상 링크를 붙여넣어 주세요." };
+  }
+
+  const meta = await fetchYoutubeOembed(videoId);
+  if (!meta) {
+    return { error: "영상 정보를 가져오지 못했어요. 링크를 확인해 주세요." };
+  }
+
+  await addYoutubeVideo({
+    bookId,
+    videoId,
+    title: meta.title,
+    channel: meta.channel,
+    thumbnailUrl: meta.thumbnailUrl,
+  });
+  revalidatePath(`/books/${bookId}`);
+  return { error: null, message: "영상을 추가했어요." };
+}
+
+export async function deleteYoutubeVideoAction(
+  _prevState: VideoFormState,
+  formData: FormData
+): Promise<VideoFormState> {
+  const videoId = formData.get("videoId");
+  if (typeof videoId !== "string") return { error: null };
+
+  const video = await getYoutubeVideo(videoId);
+  if (!video) return { error: null };
+
+  await deleteYoutubeVideo(videoId);
+  revalidatePath(`/books/${video.bookId}`);
+  return { error: null, message: "영상을 삭제했어요." };
 }
 
 /**
