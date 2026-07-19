@@ -10,7 +10,7 @@
 
 **구현 방침**
 - 저장소의 `updateBook(id, patch)` / `deleteBook(id)` 활용 (없으면 구현).
-- 서버 액션은 `front/src/app/(main)/books/[id]/actions.ts`에 모은다.
+- 서버 액션은 `web/src/app/(main)/books/[id]/actions.ts`에 모은다.
 - 상태 전이 시 날짜 자동 처리: wishlist → reading이면 `startDate`를 오늘로, → finished면 `finishDate`를 오늘로 기록(사용자가 폼에서 수정 가능하면 더 좋음). finished → reading 재독 전환 시 `finishDate` 제거.
 - 진행률 업데이트: 읽는 중인 책 상세에 현재 페이지 입력 → 저장 UI 추가. `currentPage`가 `totalPages` 이상이면 완독 전환을 제안하거나 자동 처리.
 - 책 정보 수정: `/books/[id]/edit` 라우트 신설 — 제목/저자/출판사/총 페이지/상태/날짜 수정 폼 (책 등록 폼과 공용 컴포넌트로 추출 가능하면 추출).
