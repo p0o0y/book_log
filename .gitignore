@@ -43,6 +43,6 @@ next-env.d.ts
 prd.pdf
 
 # local tooling
-.claude/
+.claude/settings.local.json
 .playwright-mcp/
         
